@@ -25,3 +25,9 @@ export function logout() {
     method: 'post'
   })
 }
+export function  getVisiCount(){
+  return request({
+    url:'/visit/getVisit',
+    method:'post'
+  })
+}

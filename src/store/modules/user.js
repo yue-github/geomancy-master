@@ -1,4 +1,4 @@
-import { login, logout, getInfo } from '@/api/login'
+import { login, logout, getInfo,getVisiCount} from '@/api/login'
 import { getToken, setToken, removeToken } from '@/utils/auth'
 
 const user = {
@@ -39,7 +39,16 @@ const user = {
         })
       })
     },
-
+    getVisiCount({ commit }){
+      return new Promise((resolve,reject)=>{
+        getVisiCount().then(res=>{
+          resolve(1);
+        })
+        .catch(error => {
+          reject(error)
+        })
+      })
+    },
     // 获取用户信息
     GetInfo({ commit, state }) {
       return new Promise((resolve, reject) => {

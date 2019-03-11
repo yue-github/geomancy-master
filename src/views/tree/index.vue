@@ -6,7 +6,8 @@
 					:data="tableData"
 					:empty-text="msg"
 					class="tableMain"
-					
+					height="500"
+					v-loading='loading'
 					style="width: 100%">
 					<el-table-column label="操作" width="180" align='center'>
 						<template slot-scope="scope" class="editor">
@@ -319,6 +320,7 @@
 		export default{
 			data() {
 				return {
+					loading:true,
 					limitUploadBoo:true,
 					gif_boo:false,
 					listen:'播放',
@@ -663,8 +665,11 @@
 	},
 
 	mounted(){
-		this.$axios.post(domain+'/api/class/getClass')
+		this.$axios.post(domain+'/api/class/getClass',{
+			domain:domain
+		})
 		.then(res=>{
+			this.loading=false;
 			this.tableData=res.data;
 		})
 		this.restaurants = this.loadAll();

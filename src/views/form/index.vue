@@ -3,14 +3,23 @@
 		<div class='title'>
 			<span class="fa fa-chevron-left title-back" @click="back" v-show="!edit_boo"></span><span class="title-word">用户推广金兑换信息</span>
 		</div>
- 		 
+ 		 <div class="delete_boo" v-show="multipleSelection.length==0?false:true">
+ 		 	<span @click="deleteChoose">选中删除</span>
+ 		 </div>
 	    <div class="tui_table" v-show="edit_boo">
 	    	<template>
 				<el-table
-						:data="tableData"
+						:data="tableData.length==0?[]:tableData"
+            v-loading='loading'
+						height="500"
 						:empty-text="msg"
 						class="tableMain"
+						 @selection-change="handleSelectionChange"
 						style="width: 100%">
+						<el-table-column
+					      type="selection"
+					      width="55">
+					    </el-table-column>
 						<el-table-column label="操作" width="230" align='center'>
 							<template slot-scope="scope" class="editor">
 
@@ -176,19 +185,156 @@ export default {
       tableData: [],
       edit_boo:true,
       msgDetail:{
-    	
-   	  }
+    	 
+   	  },
+      loading:true,
+   	  multipleSelection:[]
     }
 
   },
   methods: {
+  	 deleteChoose(){
+  	 	this.$confirm('此操作将永久删除选中数据, 是否继续?', '提示', {
+          confirmButtonText: '确定',
+          cancelButtonText: '取消',
+          type: 'warning',
+          center:true
+        }).then(() => {
+         
+        const loading = this.$loading({
+            lock: true,
+            text: '数据删除中...',
+            spinner: 'el-icon-loading',
+            background: 'rgba(0, 0, 0, 0.7)'
+          });
+        	this.edit_boo=true;
+        	this.$axios.post(domain+'api/msg/deleteAll',{
+        		...this.multipleSelection
+        	})
+        	.then(res=>{
+        		if(res.data.status==200){
+        			this.tableData=res.data.data;
+        			this.$message({
+        				showClose: true,
+			            type: 'success',
+			            message: '数据删除成功'
+			        });
+        		}else{
+        			this.$message({
+        				showClose: true,
+			            type: 'error',
+			            message: '数据删除失败'
+			        });
+        		}
+        		loading.close();
+        	 
+        		
+        	})
+        	.catch(res=>{
+        		this.$message({
+			            type: 'error',
+			            message: '数据删除失败'
+			    });
+			    loading.close();
+			    
+        	})
+          // this.$message({
+          //   type: 'success',
+          //   message: '删除成功!'
+          // });
+        }).catch(() => {
+	         this.$message({
+	            type: 'info',
+	            message: '已取消删除'
+	         });         
+        });
+  	 },
+	 handleSelectionChange(val) {
+	    let newV=val.map((item,index)=>{
+	    	return item.id;
+	    });
+
+	    this.multipleSelection = newV;
+	 
+	},
      handleLook(index, row) {
-     	this.msgDetail=this.tableData[index];
-     	this.msgDetail.index=index;
-     	this.edit_boo=false;
+      // const loading = this.$loading({
+      //       lock: true,
+      //       text: '数据加载中...',
+      //       spinner: 'el-icon-loading',
+      //       background: 'rgba(0, 0, 0, 0.7)'
+      // });
+      this.$axios.post(domain+'api/user/getConcactImg',{
+        openid:row.openid
+      })
+      .then(res=>{
+          this.msgDetail=Object.assign({},this.msgDetail,res.data[0]);
+          
+      })
+      .catch(res=>{
+       
+      });
+      this.msgDetail=row;
+      this.msgDetail.index=index;
+      this.edit_boo=false;
+         
+     	
      },
      handleDelete(index, row){
-
+     	 this.$confirm('此操作将永久删除这条数据, 是否继续?', '提示', {
+          confirmButtonText: '确定',
+          cancelButtonText: '取消',
+          type: 'warning',
+          center:true
+        }).then(() => {
+         
+        const loading = this.$loading({
+            lock: true,
+            text: '数据删除中...',
+            spinner: 'el-icon-loading',
+            background: 'rgba(0, 0, 0, 0.7)'
+          });
+        	this.edit_boo=true;
+        	this.$axios.post(domain+'api/msg/adminDelete',{
+        		id:row.id
+        	})
+        	.then(res=>{
+        		if(res.data.status==200){
+        			this.tableData=res.data.data;
+        			this.$message({
+        				showClose: true,
+			            type: 'success',
+			            message: '数据删除成功'
+			        });
+        		}else{
+        			this.$message({
+        				showClose: true,
+			            type: 'error',
+			            message: '数据删除失败'
+			        });
+        		}
+        		loading.close();
+        	 
+        		
+        	})
+        	.catch(res=>{
+        		this.$message({
+			            type: 'error',
+			            message: '数据删除失败'
+			    });
+			    loading.close();
+			    
+        	})
+          // this.$message({
+          //   type: 'success',
+          //   message: '删除成功!'
+          // });
+        }).catch(() => {
+	         this.$message({
+	            type: 'info',
+	            message: '已取消删除'
+	         });         
+        });
      },
      back() {
      	if(this.msgDetail.is_success==1){
@@ -198,7 +344,8 @@ export default {
         this.$confirm('你是否将此条信息标记为已处理？, 请选择', '提示', {
           confirmButtonText: '标记为已处理',
           cancelButtonText: '不标记继续返回',
-          type: 'warning'
+          type: 'warning',
+          center:true,
         }).then(() => {
          
         const loading = this.$loading({
@@ -291,8 +438,10 @@ export default {
   mounted(){
   	this.$axios.post(domain+'api/msg/getTuiMoneyConvert')
   	.then(res=>{
+      this.loading=false;
   		this.tableData=res.data;
-  		this.msgDetail=this.tableData[0];
+  		this.msgDetail=this.tableData[0]?this.tableData[0]:{};
+      
   	})
   }
 }
@@ -380,6 +529,22 @@ export default {
   	 margin-left:-5%;
   	 font-size: 1rem;
   	 font-weight:bold;
+  }
+  .delete_boo{
+  	width:100%;
+  	margin:5px 10px;
+  }
+  .delete_boo > span{
+  	width:100px;
+  	height:30px;
+  	border-radius:3px;
+  	display:flex;
+  	align-items: center;
+  	justify-content: center;
+  	background:red;
+  	color:#fff;
+  	font-size:0.8rem;
+  	cursor:pointer;
   }
 </style>
 

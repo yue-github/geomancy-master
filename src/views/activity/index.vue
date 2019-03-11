@@ -1,13 +1,26 @@
 <template >
   <div style="padding:30px;">
-	    <el-alert :closable="false" title="积分规则/签到一次所获积分">
+	    <el-alert :closable="false" title="
+      活动编辑">
 	      <router-view />
 	    </el-alert>
 		
 	    <div v-for="(item,index) in integral" class="integral">
-		  <el-input placeholder="请输入内容" v-model="item.addPoint">
-		    <template slot="prepend">{{item.role}}</template>
+		  <el-input placeholder="请输入内容" v-model="item.title">
+		    <template slot="prepend">活动主题</template>
 		  </el-input>
+      <el-input placeholder="请输入内容" v-model="item.content">
+        <template slot="prepend">活动内容</template>
+      </el-input>
+      <el-input placeholder="请输入内容" v-model="item.condition">
+        <template slot="prepend">活动奖品条件</template>
+      </el-input>
+      <el-input placeholder="请输入内容" v-model="item.time">
+        <template slot="prepend">活动时间</template>
+      </el-input>
+      <el-input placeholder="请输入内容" v-model="item.place">
+        <template slot="prepend">活动地点</template>
+      </el-input>
 		</div>
 
 		<div class="submit-all">
@@ -29,24 +42,24 @@
      editSubmit(){
      	const loading = this.$loading({
             lock: true,
-            text: '积分规则修改中...',
+            text: '活动修改中...',
             spinner: 'el-icon-loading',
             background: 'rgba(0, 0, 0, 0.7)'
           });
-     	this.$axios.post(domain+'/api/rule/editRule',{
+     	this.$axios.post(domain+'/api/activity/adminEditActivity',{
      		...this.integral
      	})
     	.then(res=>{
     		if(res.status==200){
     			this.$message({
 		          showClose: true,
-		          message: '规则修改成功',
+		          message: '活动修改成功',
 		          type: 'success'
 		        });
     		}else{
     			this.$message({
 		          showClose: true,
-		          message: '规则修改失败',
+		          message: '活动修改失败',
 		          type: 'error'
 		        });
     		}
@@ -56,14 +69,14 @@
     	.catch(res=>{
     		this.$message({
 		          showClose: true,
-		          message: '规则修改失败',
+		          message: '活动修改失败',
 		          type: 'error'
 		     });
     		loading.close();
     	})
      }
     },
-      beforeCreate(){
+    beforeCreate(){
       this.loading = this.$loading({
             lock: true,
             text: '拼命加载中...',
@@ -72,7 +85,7 @@
           });
     },
     mounted(){
-    	this.$axios.post(domain+'/api/rule/getRule')
+    	this.$axios.post(domain+'/api/activity/adminGetActivity')
     	.then(res=>{
         this.loading.close();
     		this.integral=res.data;

@@ -38,11 +38,11 @@
 <script>
   // import { loading } from 'element-ui';
   import domain from '@/domain';
-  import imgChoose from '@/components/iview/imgChooseM';
+  import imgChoose from '@/components/iview/imgChooseS';
   export default {
     data() {
       return {
-       
+        
           bannerMsg:[
             
           ]
@@ -50,15 +50,23 @@
       }
         
     },
+      beforeCreate(){
+      this.loading = this.$loading({
+            lock: true,
+            text: '拼命加载中...',
+            spinner: 'el-icon-loading',
+            background: 'rgba(0, 0, 0, 0.7)'
+          });
+    },
     methods: {
       changeImgMsg(data){
+      
         this.bannerMsg[data.imgIndex]=data;
-       
       },
       
-      // 用于上传判断，避免出现bug
       submit(){
-       
+    
+        
         const loading = this.$loading({
           lock: true,
           text: '数据修改中...',
@@ -75,21 +83,23 @@
           }
           return obj;
         })
-        this.$axios.post(domain+'/api/banner/setList',{
+
+        this.$axios.post(domain+'/api/bannerShop/setList',{
           json
         })
         .then(res=>{
           this.bannerMsg=res.data;
           loading.close();
-            this.$Notice.open({
-                top: 50,
-                duration: 3,
-                desc:'轮播图数据修改成功',
-                title:'数据修改'
-            })
-          
+          this.$Notice.open({
+              top: 50,
+              duration: 3,
+              desc:'轮播图数据修改成功',
+              title:'数据修改'
           })
-          .catch(res=>{
+         
+           
+        })
+         .catch(res=>{
                loading.close();
           })
       }
@@ -97,18 +107,11 @@
     components:{
       imgChoose
     },
-      beforeCreate(){
-      this.loading = this.$loading({
-            lock: true,
-            text: '拼命加载中...',
-            spinner: 'el-icon-loading',
-            background: 'rgba(0, 0, 0, 0.7)'
-          });
-    },
+
     mounted(){
 
       let that=this;
-      this.$axios.post(domain+'/api/banner/list')
+      this.$axios.post(domain+'/api/bannerShop/list')
       .then(res=>{
         this.loading.close();
         this.bannerMsg=res.data;

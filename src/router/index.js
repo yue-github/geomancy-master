@@ -47,9 +47,15 @@ export const constantRouterMap = [
     children: [
       {
         path: 'table',
-        name: '轮播图',
+        name: '首页轮播图',
         component: () => import('@/views/table/index'),
-        meta: { title: '轮播图', icon: 'fa fa-image' }
+        meta: { title: '首页轮播图', icon: 'fa fa-image' }
+      },
+       {
+        path: 'shopBanner',
+        name: '商城轮播图',
+        component: () => import('@/views/shopBanner/index'),
+        meta: { title: '商城轮播图', icon: 'fa fa-image' }
       },
       {
         path: 'tree',
@@ -81,6 +87,7 @@ export const constantRouterMap = [
       }
     ]
   },
+ 
   
 
   {
@@ -148,16 +155,48 @@ export const constantRouterMap = [
     ]
   },
 
-  // {
-  //   path: 'external-link',
-  //   component: Layout,
-  //   children: [
-  //     {
-  //       path: 'https://panjiachen.github.io/vue-element-admin-site/#/',
-  //       meta: { title: 'External Link', icon: 'link' }
-  //     }
-  //   ]
-  // },
+ {
+    path: '/activity',
+    component: Layout,
+    name:'活动',
+    children: [
+      {
+        path: 'activity',
+        name: '活动',
+        component: () => import('@/views/activity/index'),
+        meta: { title: '活动', icon: 'fa fa-cloud' }
+      }
+    ]
+  },
+
+  {
+    path: '/userMessage',
+    component: Layout,
+    name:'用户信息',
+    children: [
+      {
+        path: 'userMessage',
+        name: '用户信息',
+        component: () => import('@/views/userMessage/index'),
+        meta: { title: '用户信息', icon: 'fa fa-address-book-o' }
+      }
+    ]
+  },
+
+   {
+    path: '/userMsg',
+    component: Layout,
+    name:'课程购买详情',
+    children: [
+      {
+        path: 'index',
+        name: '课程购买详情',
+        component: () => import('@/views/class/index'),
+        meta: { title: '课程购买详情', icon: 'fa fa-book' }
+      }
+    ]
+  },
+
   {
     path: 'external-link',
     component: Layout,

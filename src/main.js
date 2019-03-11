@@ -14,16 +14,18 @@ import router from './router'
 
 import '@/icons' // icon
 import '@/permission' // permission control
-import $ from "./../public/jquery-3.2.1.min.js"
 import iView from 'iview'
 import 'iview/dist/styles/iview.css'
 import 'font-awesome/css/font-awesome.min.css'
+import  echarts from 'echarts'
+ 
 
+Vue.prototype.$echarts=echarts
 
-
+ 
 
 Vue.prototype.$axios=axios
-Vue.prototype.$=$
+
 Vue.use(iView)
 /**
  * This project originally used easy-mock to simulate data,
@@ -38,7 +40,7 @@ Vue.use(iView)
 Vue.use(ElementUI, { locale })
 
 Vue.config.productionTip = false
-
+ 
 new Vue({
   el: '#app',
   router,

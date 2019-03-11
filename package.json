@@ -15,6 +15,7 @@
   },
   "dependencies": {
     "axios": "0.18.0",
+    "echarts": "^4.1.0",
     "element-ui": "2.4.6",
     "font-awesome": "^4.7.0",
     "iview": "^3.2.2",
@@ -49,6 +50,7 @@
     "file-loader": "1.1.11",
     "friendly-errors-webpack-plugin": "1.7.0",
     "html-webpack-plugin": "4.0.0-alpha",
+    "jquery": "^3.3.1",
     "mini-css-extract-plugin": "0.4.1",
     "node-notifier": "5.2.1",
     "node-sass": "^4.7.2",
